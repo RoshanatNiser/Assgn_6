@@ -4,18 +4,11 @@
 
 import math
 
-def abs(d):
 
-    """" This function returns the absoulute value of the input."""
-    if d<0:
-        return (-1)*d
-    if d>=0:
-        return d
-
-def f(x,f=0):
+def f(x,f):
 
     """This function defines the functions."""
-    
+
     if f==0: # for question 1
         a=math.log(x/2)
         b=math.sin(5*x/2)
@@ -27,64 +20,69 @@ def f(x,f=0):
         return a-b
 
 
-def Bisection(a=1.5,b=3.0,f=0,e=10*-6,d=10*-6):
+def Bisection(a=1.5,b=3.0,t=0,e=10**-6,d=10**-6):
 
     """This function utilises sthe bisection method to find roots."""
 
-    if f(a)*f(b) <=0:
+    if f(a,t) * f(b,t) <=0:
         if abs(b-a) < e:
-            if abs(f(a,f)) < d:
+            if abs(f(a,t)) < d:
                 return a
-            if abs(f(b,f)) < d:
+            if abs(f(b,t)) < d:
                 return b
     
+        else:
+            c=(a + b)/2
+            if f(c,t)*f(a,t)<0:
+                return Bisection(a=a,b=c,t=t)
+            if f(c,t)*f(b,t) <0:
+                return Bisection(a=c,b=b,t=t)
     else:
-        c=(a + b)/2
-        if f(c,f)*f(a,f)<0:
-            return Bisection(a=a,b=c,f=f)
-        if f(c,f)*f(b,f) <0:
-            return Bisection(a=c,b=b,f=f)
-        
-def regular_falsi(a=1.5,b=3.0,c=0,f=0,e=10*-6,d=10*-6):
+        return 'No root found in the given interval'
+    
+def regular_falsi(a=1.5,b=3.0,c=None,t=0,e=10**-6,d=10**-6):
 
     """This function utilises sthe Regular Falsi method to find roots."""
 
-    if f(a)*f(b) <=0:
+    if f(a,t)*f(b,t) <=0:
         if abs(b-a) < e:
-            if abs(f(a,f)) < d:
+            if abs(f(a,t)) < d:
                 return a
-            if abs(f(b,f)) < d:
+            if abs(f(b,t)) < d:
                 return b
-    else:
-        c_new = (b - (((b -a)*f(b,f))/(f(b)-f(a))))
-        if f(a,f)*f(c_new,f) <= 0:
-            if abs(c_new - c) < e: 
-                return c
-            else:
-                return regular_falsi(a=a,b=c_new,c=c_new,f=f)
-        
-        if f(b,f)*f(c,f) <= 0:
-            if abs(c_new - c) < e: 
-                return c
-            else:
-                return regular_falsi(a=c_new,b=b,c=c_new,f=f)
+        else:
+            c=a
+            c_new = (b - (((b -a)*f(b,t))/(f(b,t)-f(a,t))))
+            if f(a,t)*f(c_new,t) <= 0:
+                if abs(c_new - c) < e: 
+                    return c
+                else:
+                    return regular_falsi(a=a,b=c_new,c=c_new,t=t)
             
-def bracketing(a,b,f=0,beta=0.2):
+            if f(b,t)*f(c,t) <= 0:
+                if abs(c_new - c) < e: 
+                    return c
+                else:
+                    return regular_falsi(a=c_new,b=b,c=c_new,t=t)
+    else:
+        return 'No root found in the given interval'
+            
+def bracketing(a,b,t=0,beta=0.2):
 
     """This function find the bracket contain the root of the function."""
 
     if a > b:
         a,b=b,a
 
-    if f(a,f)*f(b,f)<=0:
+    if f(a,t)*f(b,t)<=0:
         l=[a,b]
         return l
     
     else:
-        if abs(f(a,f)) < abs(f(b,f)):
+        if abs(f(a,t)) < abs(f(b,t)):
             a_new=a-beta*(b-a)
-            return bracketing(a=a_new,b=b,f=0,beta=0.5)
-        if abs(f(a,f)) >= abs(f(b,f)):
+            return bracketing(a=a_new,b=b,t=0,beta=0.5)
+        if abs(f(a,t)) >= abs(f(b,t)):
             b_new=b+beta*(b-a)
-            return bracketing(a=a,b=b_new,f=0,beta=0.5)
+            return bracketing(a=a,b=b_new,t=0,beta=0.5)
             
